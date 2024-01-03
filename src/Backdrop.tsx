@@ -1,12 +1,22 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { View, StyleSheet, TouchableWithoutFeedback, Animated } from 'react-native';
-import { OPEN_ANIM_DURATION, CLOSE_ANIM_DURATION, USE_NATIVE_DRIVER } from './constants';
+import {
+  Animated,
+  StyleProp,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  View,
+  ViewStyle,
+} from 'react-native';
+import { CLOSE_ANIM_DURATION, OPEN_ANIM_DURATION, USE_NATIVE_DRIVER } from './constants';
 
-class Backdrop extends Component {
-
-  constructor(...args) {
-    super(...args);
+type Props = {
+  onPress: () => unknown;
+  style: StyleProp<ViewStyle>;
+};
+class Backdrop extends Component<Props> {
+  fadeAnim: Animated.Value;
+  constructor(props: Props) {
+    super(props);
     this.fadeAnim = new Animated.Value(0.001);
   }
 
@@ -40,12 +50,7 @@ class Backdrop extends Component {
       </TouchableWithoutFeedback>
     );
   }
-
 }
-
-Backdrop.propTypes = {
-  onPress: PropTypes.func.isRequired,
-};
 
 const styles = StyleSheet.create({
   fullscreen: {

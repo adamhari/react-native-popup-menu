@@ -7,7 +7,7 @@
     "example": "examples"
   },
   "scripts": {
-    "build": "rollup -c rollup.config.babel.js",
+    "build": "rollup -c rollup.config.babel.js --bundleConfigAsCjs",
     "prepublish": "yarn build",
     "test": "jest",
     "lint": "eslint ."
@@ -22,7 +22,7 @@
     "url": "https://github.com/instea/react-native-popup-menu/issues"
   },
   "homepage": "https://github.com/instea/react-native-popup-menu",
-  "typings": "src/index.d.ts",
+  "typings": "src/types.ts",
   "jest": {
     "transform": {
       ".*": "<rootDir>/node_modules/babel-jest"
@@ -33,44 +33,52 @@
       "<rootDir>/examples/"
     ],
     "moduleFileExtensions": [
-      "js"
+      "js",
+      "jsx",
+      "ts",
+      "tsx"
     ],
     "unmockedModulePathPatterns": [
-      "<rootDir>/node_modules/jasmine-reporters",
       "<rootDir>/node_modules/react",
       "<rootDir>/node_modules/chai",
       "<rootDir>/__tests__/helpers.js",
       "<rootDir>/node_modules/fbjs"
     ],
     "verbose": true,
-    "collectCoverage": true,
-    "setupTestFrameworkScriptFile": "<rootDir>/setup-jasmine-env.js"
+    "collectCoverage": true
   },
   "devDependencies": {
-    "@babel/core": "^7.2.2",
-    "@babel/plugin-proposal-class-properties": "^7.3.0",
-    "@babel/preset-env": "^7.3.1",
-    "@babel/preset-react": "^7.0.0",
-    "@babel/runtime": "^7.3.1",
+    "@babel/core": "^7.23.7",
+    "@babel/plugin-transform-class-properties": "^7.23.3",
+    "@babel/preset-env": "^7.23.7",
+    "@babel/preset-react": "^7.23.3",
+    "@babel/preset-typescript": "^7.23.3",
+    "@babel/runtime": "^7.23.7",
+    "@rollup/plugin-babel": "^6.0.4",
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-replace": "^5.0.5",
+    "@rollup/plugin-typescript": "^11.1.5",
+    "@types/react": "^18.2.46",
     "babel-eslint": "^7.2.3",
-    "babel-jest": "^24.1.0",
-    "babel-polyfill": "^6.23.0",
+    "babel-jest": "^29.7.0",
+    "babel-polyfill": "^6.26.0",
     "chai": "^3.5.0",
-    "eslint": "^4.18.2",
-    "eslint-plugin-react": "^7.0.0",
-    "jasmine-reporters": "^2.1.1",
-    "jest-cli": "^24.1.0",
-    "metro-react-native-babel-preset": "^0.51.1",
+    "eslint": "^8.56.0",
+    "eslint-plugin-react": "^7.33.2",
+    "jest": "^29.7.0",
+    "jest-cli": "^29.7.0",
+    "metro-react-native-babel-preset": "^0.77.0",
+    "prettier": "^3.1.1",
+    "prettier-plugin-organize-imports": "^3.2.4",
     "prop-types": "^15.5.10",
-    "react": "^16.3.1",
-    "react-dom": "^16.3.1",
-    "react-test-renderer": "^16.3.1",
-    "rollup": "^1.1.2",
-    "rollup-plugin-babel": "^4.3.2",
-    "rollup-plugin-commonjs": "^9.2.0",
-    "rollup-plugin-node-resolve": "^4.0.0",
-    "rollup-plugin-replace": "^2.1.0",
-    "sinon": "^2.2.0"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-native": "^0.72.0",
+    "react-test-renderer": "^18.2.0",
+    "rollup": "^4.9.2",
+    "sinon": "^2.2.0",
+    "typescript": "^5.3.3"
   },
   "dependencies": {}
 }

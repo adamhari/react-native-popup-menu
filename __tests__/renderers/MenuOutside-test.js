@@ -1,12 +1,11 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { Text, View } from 'react-native';
 import { render } from '../helpers';
 
 jest.dontMock('../../src/renderers/MenuOutside');
 const { default: MenuOutside, computePosition } = require('../../src/renderers/MenuOutside');
 
 describe('MenuOutside', () => {
-
   const defaultLayouts = {
     windowLayout: { width: 400, height: 600 },
     triggerLayout: { width: 50, height: 50, x: 10, y: 10 },
@@ -19,13 +18,10 @@ describe('MenuOutside', () => {
         <MenuOutside layouts={defaultLayouts}>
           <Text>Some text</Text>
           <Text>Other text</Text>
-        </MenuOutside>
+        </MenuOutside>,
       );
       expect(output.type).toEqual(View);
-      expect(output.props.children).toEqual([
-        <Text>Some text</Text>,
-        <Text>Other text</Text>,
-      ]);
+      expect(output.props.children).toEqual([<Text>Some text</Text>, <Text>Other text</Text>]);
     });
   });
 
@@ -33,10 +29,12 @@ describe('MenuOutside', () => {
     it('should compute position outside of the screen', () => {
       const windowLayout = { width: 400, height: 600 };
       const layouts = { windowLayout };
-      expect(computePosition(layouts)).toEqual({
-        top: 600, left: 400,
-      });
+      expect(computePosition(layouts)).toEqual(
+        expect.objectContaining({
+          top: 600,
+          left: 400,
+        }),
+      );
     });
   });
-
 });

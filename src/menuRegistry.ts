@@ -1,4 +1,6 @@
+import { Menu } from './Menu';
 import { iterator2array } from './helpers';
+import { MenuEntry, OptionsLayoutType, TriggerLayoutType } from './types';
 
 /**
  * Registry to subscribe, unsubscribe and update data of menus.
@@ -9,14 +11,13 @@ import { iterator2array } from './helpers';
  *   optionsLayout: Object - layout of menu options if known
  *   optionsCustomStyles: Object - custom styles of options
  * }
-*/
-export default function makeMenuRegistry(menus = new Map()) {
-
+ */
+export default function makeMenuRegistry(menus = new Map<string, MenuEntry>()) {
   /**
    * Subscribes menu instance.
    */
-  function subscribe(instance) {
-    const name = instance.getName()
+  function subscribe(instance: Menu) {
+    const name = instance.getName();
     if (menus.get(name)) {
       console.warn(`incorrect usage of popup menu - menu with name ${name} already exists`);
     }
@@ -26,14 +27,17 @@ export default function makeMenuRegistry(menus = new Map()) {
   /**
    * Unsubscribes menu instance.
    */
-  function unsubscribe(instance) {
+  function unsubscribe(instance: Menu) {
     menus.delete(instance.getName());
   }
 
   /**
    * Updates layout infomration.
    */
-  function updateLayoutInfo(name, layouts = {}) {
+  function updateLayoutInfo(
+    name: string,
+    layouts: { triggerLayout?: TriggerLayoutType; optionsLayout?: OptionsLayoutType } = {},
+  ) {
     if (!menus.has(name)) {
       return;
     }
@@ -47,18 +51,18 @@ export default function makeMenuRegistry(menus = new Map()) {
     menus.set(name, menu);
   }
 
-  function setOptionsCustomStyles(name, optionsCustomStyles) {
+  function setOptionsCustomStyles(name: string, optionsCustomStyles = {}) {
     if (!menus.has(name)) {
       return;
     }
-    const menu = { ...menus.get(name), optionsCustomStyles };
+    const menu = { ...(menus.get(name) as MenuEntry), optionsCustomStyles };
     menus.set(name, menu);
   }
 
   /**
    * Get `menu data` by name.
    */
-  function getMenu(name) {
+  function getMenu(name: string) {
     return menus.get(name);
   }
 

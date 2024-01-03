@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { View, Text } from 'react-native';
-import { debug } from './logger.js';
-import { makeTouchable } from './helpers';
+import { Text, View } from 'react-native';
 import { withCtx } from './MenuProvider';
+import { makeTouchable } from './helpers';
+import { debug } from './logger';
+import { MenuContextProps, MenuTriggerProps } from './types';
 
-export class MenuTrigger extends Component {
+type Props = MenuTriggerProps & MenuContextProps;
 
+export class MenuTrigger extends Component<Props> {
   _onPress() {
     debug('trigger onPress');
     this.props.onPress && this.props.onPress();
@@ -14,10 +15,23 @@ export class MenuTrigger extends Component {
   }
 
   render() {
-    const { disabled, onRef, text, children, style, customStyles, menuName, 
-      triggerOnLongPress, onAlternativeAction, testID, ...other } = this.props;
+    const {
+      disabled,
+      onRef,
+      text,
+      children,
+      style,
+      customStyles = {},
+      menuName,
+      triggerOnLongPress,
+      onAlternativeAction,
+      testID,
+      ...other
+    } = this.props;
     const onPress = () => !disabled && this._onPress();
-    const { Touchable, defaultTouchableProps } = makeTouchable(customStyles.TriggerTouchableComponent);
+    const { Touchable, defaultTouchableProps } = makeTouchable(
+      customStyles.TriggerTouchableComponent,
+    );
     return (
       <View ref={onRef} collapsable={false} style={customStyles.triggerOuterWrapper}>
         <Touchable
@@ -34,23 +48,6 @@ export class MenuTrigger extends Component {
       </View>
     );
   }
-
 }
 
-MenuTrigger.propTypes = {
-  disabled: PropTypes.bool,
-  text: PropTypes.string,
-  onPress: PropTypes.func,
-  onAlternativeAction: PropTypes.func,
-  customStyles: PropTypes.object,
-  triggerOnLongPress: PropTypes.bool,
-  testID: PropTypes.string,
-};
-
-MenuTrigger.defaultProps = {
-  disabled: false,
-  customStyles: {},
-  testID: undefined,
-};
-
-export default withCtx(MenuTrigger)
+export default withCtx(MenuTrigger);

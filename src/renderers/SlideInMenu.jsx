@@ -1,21 +1,21 @@
 import React from 'react';
-import { Animated, StyleSheet, Easing } from 'react-native';
-import { OPEN_ANIM_DURATION, CLOSE_ANIM_DURATION, USE_NATIVE_DRIVER } from '../constants';
+import { Animated, Easing, StyleSheet } from 'react-native';
+import { CLOSE_ANIM_DURATION, OPEN_ANIM_DURATION, USE_NATIVE_DRIVER } from '../constants';
 
-export const computePosition = (layouts) => {
-  const { windowLayout, optionsLayout } = layouts
+export const computePosition = layouts => {
+  const { windowLayout, optionsLayout } = layouts;
   const { height: wHeight } = windowLayout;
   const { height: oHeight } = optionsLayout;
-  const top  = wHeight - oHeight;
-  const left = 0, right = 0;
+  const top = wHeight - oHeight;
+  const left = 0,
+    right = 0;
   const position = { top, left, right };
   // TODO what is the best way to handle safeArea?
-  // most likely some extra paddings inside SlideInMenu 
+  // most likely some extra paddings inside SlideInMenu
   return position;
-}
+};
 
 export default class SlideInMenu extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -47,12 +47,14 @@ export default class SlideInMenu extends React.Component {
     const { style, children, layouts, ...other } = this.props;
     const { height: oHeight } = layouts.optionsLayout;
     const animation = {
-      transform: [{
-        translateY: this.state.slide.interpolate({
-          inputRange: [0, 1],
-          outputRange: [oHeight, 0],
-        }),
-      }],
+      transform: [
+        {
+          translateY: this.state.slide.interpolate({
+            inputRange: [0, 1],
+            outputRange: [oHeight, 0],
+          }),
+        },
+      ],
     };
     const position = computePosition(layouts);
     return (

@@ -1,43 +1,57 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { View, StyleSheet, Text } from 'react-native';
-import { debug } from './logger';
-import { makeTouchable } from './helpers';
+import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { withCtx } from './MenuProvider';
+import { makeTouchable } from './helpers';
+import { debug } from './logger';
+import { MenuContextProps, MenuOptionCustomStyle } from './types';
 
+export type MenuOptionsProps = {
+  value?: any;
+  text?: string;
+  disabled?: boolean;
+  disableTouchable?: boolean;
+  customStyles?: MenuOptionCustomStyle;
 
-export class MenuOption extends Component {
+  style?: StyleProp<ViewStyle>;
+  testID?: string;
 
+  onSelect?: (value: unknown) => unknown;
+  children?: React.ReactNode;
+};
+
+export class MenuOption extends Component<MenuOptionsProps & MenuContextProps> {
   _onSelect() {
     const { value } = this.props;
-    const onSelect = this.props.onSelect || this._getMenusOnSelect()
-    const shouldClose = onSelect(value) !== false;
+    const onSelect = this.props.onSelect || this._getMenusOnSelect();
+    const shouldClose = onSelect?.(value) !== false;
     debug('select option', value, shouldClose);
     if (shouldClose) {
-        this.props.ctx.menuActions.closeMenu();
+      this.props.ctx.menuActions.closeMenu();
     }
   }
 
   _getMenusOnSelect() {
     const menu = this.props.ctx.menuActions._getOpenedMenu();
-    return menu.instance.props.onSelect;
+    return menu?.instance.props.onSelect;
   }
 
   _getCustomStyles() {
     // FIXME react 16.3 workaround for ControlledExample!
-    const menu = this.props.ctx.menuActions._getOpenedMenu() || {}
-    const { optionsCustomStyles } = menu;
+    const menu = this.props.ctx.menuActions._getOpenedMenu();
+    const { optionsCustomStyles } = menu ?? { optionsCustomStyles: {} };
     return {
       ...optionsCustomStyles,
       ...this.props.customStyles,
-    }
+    };
   }
 
   render() {
     const { text, disabled, disableTouchable, children, style, testID } = this.props;
-    const customStyles = this._getCustomStyles()
+    const customStyles = this._getCustomStyles();
     if (text && React.Children.count(children) > 0) {
-      console.warn("MenuOption: Please don't use text property together with explicit children. Children are ignored.");
+      console.warn(
+        "MenuOption: Please don't use text property together with explicit children. Children are ignored.",
+      );
     }
     if (disabled) {
       const disabledStyles = [defaultStyles.optionTextDisabled, customStyles.optionText];
@@ -54,9 +68,10 @@ export class MenuOption extends Component {
     );
     if (disableTouchable) {
       return rendered;
-    }
-    else {
-      const { Touchable, defaultTouchableProps } = makeTouchable(customStyles.OptionTouchableComponent);
+    } else {
+      const { Touchable, defaultTouchableProps } = makeTouchable(
+        customStyles.OptionTouchableComponent,
+      );
       return (
         <Touchable
           testID={testID}
@@ -70,23 +85,6 @@ export class MenuOption extends Component {
     }
   }
 }
-
-MenuOption.propTypes = {
-  disabled: PropTypes.bool,
-  disableTouchable: PropTypes.bool,
-  onSelect: PropTypes.func,
-  text: PropTypes.string,
-  value: PropTypes.any,
-  customStyles: PropTypes.object,
-  testID: PropTypes.string,
-};
-
-MenuOption.defaultProps = {
-  disabled: false,
-  disableTouchable: false,
-  customStyles: {},
-  testID: undefined,
-};
 
 const defaultStyles = StyleSheet.create({
   option: {

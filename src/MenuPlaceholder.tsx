@@ -1,11 +1,16 @@
 import React, { Component } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import Backdrop from './Backdrop';
-import { debug } from './logger.js';
+import { debug } from './logger';
+import { MenuContextProps } from './types';
 
-export default class MenuPlaceholder extends Component {
-  constructor(props) {
-    super(props)
+type Props = MenuContextProps & {
+  backdropStyles?: StyleProp<ViewStyle>;
+};
+
+export default class MenuPlaceholder extends Component<Props, { openedMenuName?: string }> {
+  constructor(props: Props) {
+    super(props);
     this.state = {};
   }
 
@@ -23,14 +28,8 @@ export default class MenuPlaceholder extends Component {
     }
     return (
       <View style={styles.placeholder}>
-        <Backdrop
-          onPress={ctx._onBackdropPress}
-          style={backdropStyles}
-          ref={ctx.onBackdropRef}
-        />
-        {
-          ctx._makeOptions()
-        }
+        <Backdrop onPress={ctx._onBackdropPress} style={backdropStyles} ref={ctx.onBackdropRef} />
+        {ctx._makeOptions()}
       </View>
     );
   }

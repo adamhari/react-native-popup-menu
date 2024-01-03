@@ -9,7 +9,6 @@
     "afterEach": true,
     "jest": true,
     "expect": true,
-    "jasmine": true
   },
   "rules": {
     "react/jsx-key": 0,

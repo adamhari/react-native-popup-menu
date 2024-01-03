@@ -7,7 +7,6 @@ import { computePosition, styles } from './ContextMenu';
 Simplified version of ContextMenu without animation.
 */
 export default class NotAnimatedContextMenu extends React.Component {
-
   render() {
     const { style, children, layouts, ...other } = this.props;
     const position = computePosition(layouts, I18nManager.isRTL);
@@ -17,5 +16,4 @@ export default class NotAnimatedContextMenu extends React.Component {
       </View>
     );
   }
-
 }

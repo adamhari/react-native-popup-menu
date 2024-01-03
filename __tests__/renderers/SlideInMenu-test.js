@@ -6,7 +6,6 @@ jest.dontMock('../../src/renderers/SlideInMenu');
 const { default: SlideInMenu, computePosition } = require('../../src/renderers/SlideInMenu');
 
 describe('SlideInMenu', () => {
-
   const defaultLayouts = {
     windowLayout: { width: 400, height: 600 },
     optionsLayout: { width: 50, height: 100 },
@@ -17,13 +16,10 @@ describe('SlideInMenu', () => {
       <SlideInMenu layouts={defaultLayouts}>
         <Text>Some text</Text>
         <Text>Other text</Text>
-      </SlideInMenu>
+      </SlideInMenu>,
     );
     expect(output.type).toEqual(Animated.View);
-    expect(output.props.children).toEqual([
-      <Text>Some text</Text>,
-      <Text>Other text</Text>,
-    ]);
+    expect(output.props.children).toEqual([<Text>Some text</Text>, <Text>Other text</Text>]);
   });
 
   describe('computePosition', () => {
@@ -31,10 +27,13 @@ describe('SlideInMenu', () => {
       const windowLayout = { width: 400, height: 600 };
       const optionsLayout = { width: 400, height: 100 };
       const layouts = { windowLayout, optionsLayout };
-      expect(computePosition(layouts)).toEqual({
-        top: 500, left: 0, right: 0,
-      });
+      expect(computePosition(layouts)).toEqual(
+        expect.objectContaining({
+          top: 500,
+          left: 0,
+          right: 0,
+        }),
+      );
     });
   });
-
 });

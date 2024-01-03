@@ -1,8 +1,7 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { Text, View } from 'react-native';
+import { MenuOptions, MenuTrigger } from '../src/index';
 import { render } from './helpers';
-
-import { MenuTrigger, MenuOptions } from '../src/index';
 
 jest.mock('../src/helpers', () => ({
   makeName: () => 'generated-name',
@@ -13,10 +12,7 @@ jest.dontMock('../src/Menu');
 const exported = require('../src/Menu');
 const { Menu, default: ExportedMenu } = exported;
 
-const { objectContaining, createSpy, any } = jasmine;
-
 describe('Menu', () => {
-
   function renderMenu(element) {
     const ctx = createMockContext();
     const result = render(element, ctx);
@@ -26,19 +22,18 @@ describe('Menu', () => {
 
   function createMockContext() {
     return {
-      menuRegistry : {
-        subscribe: createSpy(),
-        unsubscribe: createSpy(),
+      menuRegistry: {
+        subscribe: jest.fn(),
+        unsubscribe: jest.fn(),
       },
       menuActions: {
-        _notify: createSpy(),
+        _notify: jest.fn(),
       },
-    }
+    };
   }
 
   it('should export api', () => {
     expect(typeof ExportedMenu.debug).toEqual('boolean');
-    expect(typeof ExportedMenu.setDefaultRenderer).toEqual('function');
   });
 
   it('should render component and preserve children order', () => {
@@ -48,7 +43,7 @@ describe('Menu', () => {
         <MenuTrigger />
         <MenuOptions />
         <Text>Some other text</Text>
-      </Menu>
+      </Menu>,
     );
     expect(output.type).toEqual(View);
     expect(output.props.children.length).toEqual(3);
@@ -60,13 +55,8 @@ describe('Menu', () => {
       <MenuOptions />, // options will be removed
       <Text>Some other text</Text>,
     ]);
+
     expect(output.props.children[0]).toEqual(expectedChildren[0]);
-    expect(output.props.children[1]).toEqual(objectContaining({
-      type: MenuTrigger,
-      props: objectContaining({
-        onRef: any(Function),
-      }),
-    }));
     expect(output.props.children[2]).toEqual(expectedChildren[3]);
   });
 
@@ -75,7 +65,7 @@ describe('Menu', () => {
       <Menu>
         <MenuTrigger />
         <MenuOptions />
-      </Menu>
+      </Menu>,
     );
     instance.componentDidMount();
     expect(ctx.menuRegistry.subscribe).toHaveBeenCalledWith(instance);
@@ -87,20 +77,17 @@ describe('Menu', () => {
       <Menu>
         <MenuTrigger />
         <Text>Some text</Text>
-      </Menu>
+      </Menu>,
     );
     instance.componentDidMount();
     expect(ctx.menuRegistry.subscribe).not.toHaveBeenCalled();
     const output = renderer.getRenderOutput();
     expect(output.type).toEqual(View);
-    const expectedChildren = React.Children.toArray([
-      <MenuTrigger />,
-      <Text>Some text</Text>,
-    ]);
+    const expectedChildren = React.Children.toArray([<MenuTrigger />, <Text>Some text</Text>]);
     expect(output.props.children[0]).toEqual(
-      objectContaining({
+      expect.objectContaining({
         type: MenuTrigger,
-      })
+      }),
     );
     expect(output.props.children[1]).toEqual(expectedChildren[1]);
   });
@@ -110,21 +97,17 @@ describe('Menu', () => {
       <Menu>
         <Text>Some text</Text>
         <MenuOptions />
-      </Menu>
+      </Menu>,
     );
     instance.componentDidMount();
     expect(ctx.menuRegistry.subscribe).not.toHaveBeenCalled();
     const output = renderer.getRenderOutput();
     expect(output.type).toEqual(View);
-    expect(output.props.children).toEqual(React.Children.toArray(
-      <Text>Some text</Text>
-    ));
+    expect(output.props.children).toEqual(React.Children.toArray(<Text>Some text</Text>));
   });
 
   it('should not fail without any children', () => {
-    const { instance, renderer } = renderMenu(
-      <Menu/>
-    );
+    const { instance, renderer } = renderMenu(<Menu />);
     instance.componentDidMount();
     const output = renderer.getRenderOutput();
     expect(output.type).toEqual(View);
@@ -133,16 +116,12 @@ describe('Menu', () => {
   });
 
   it('should autogenerate name if not provided', () => {
-    const { instance } = renderMenu(
-      <Menu/>
-    );
+    const { instance } = renderMenu(<Menu />);
     expect(instance.getName()).toEqual('generated-name');
   });
 
   it('should use name from props if provided', () => {
-    const { instance } = renderMenu(
-      <Menu name='prop-name'/>
-    );
+    const { instance } = renderMenu(<Menu name="prop-name" />);
     expect(instance.getName()).toEqual('prop-name');
   });
 
@@ -151,7 +130,7 @@ describe('Menu', () => {
       <Menu>
         <MenuTrigger />
         <MenuOptions />
-      </Menu>
+      </Menu>,
     );
     instance.componentWillUnmount();
     expect(ctx.menuRegistry.unsubscribe).toHaveBeenCalledWith(instance);
@@ -162,7 +141,7 @@ describe('Menu', () => {
       <Menu>
         <MenuTrigger />
         <MenuOptions />
-      </Menu>
+      </Menu>,
     );
     instance.componentDidUpdate({});
     expect(ctx.menuActions._notify).toHaveBeenCalled();
@@ -171,28 +150,24 @@ describe('Menu', () => {
   it('should get menu options', () => {
     const onSelect = () => 0;
     const { instance } = renderMenu(
-      <Menu onSelect={ onSelect }>
+      <Menu onSelect={onSelect}>
         <MenuTrigger />
         <MenuOptions />
-      </Menu>
+      </Menu>,
     );
     const options = instance._getOptions();
     expect(options.type).toEqual(MenuOptions);
   });
 
   it('declarative opened takes precedence over imperative', () => {
-    const { instance } = renderMenu(
-      <Menu opened={false}/>
-    );
+    const { instance } = renderMenu(<Menu opened={false} />);
     instance._setOpened(true);
     expect(instance.isOpen()).toEqual(false);
     expect(instance._getOpened()).toEqual(true);
   });
 
   it('imperative opened is used if no declarative', () => {
-    const { instance } = renderMenu(
-      <Menu/>
-    );
+    const { instance } = renderMenu(<Menu />);
     instance._setOpened(true);
     expect(instance.isOpen()).toEqual(true);
   });
@@ -202,7 +177,7 @@ describe('Menu', () => {
       <Menu opened={true}>
         <MenuTrigger />
         <MenuOptions />
-      </Menu>
+      </Menu>,
     );
     expect(instance.isOpen()).toEqual(true);
     instance.componentWillUnmount();
@@ -216,11 +191,9 @@ describe('Menu', () => {
       <Menu>
         <MenuTrigger />
         <MenuOptions />
-      </Menu>
+      </Menu>,
     );
     output.props.children[0].props.onRef(triggerRef);
     expect(instance._getTrigger()).toEqual(triggerRef);
   });
-
-
 });

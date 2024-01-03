@@ -3,12 +3,20 @@ const ReactNative = React;
 
 ReactNative.StyleSheet = {
   create: function create(styles) {
-      return styles;
+    return styles;
   },
 };
 
 class View extends React.Component {
-  render() { return false; }
+  render() {
+    return false;
+  }
+}
+
+class SafeAreaView extends React.Component {
+  render() {
+    return false;
+  }
 }
 
 View.propTypes = {
@@ -16,13 +24,11 @@ View.propTypes = {
 };
 
 class ListView extends React.Component {
-  static DataSource() {
-  }
+  static DataSource() {}
 }
 
 class AppRegistry {
-  static registerComponent () {
-  }
+  static registerComponent() {}
 }
 
 const Animated = {
@@ -35,7 +41,7 @@ const I18nManager = {
   isRTL: false,
 };
 
-const Text = () => "Text";
+const Text = () => 'Text';
 const TouchableHighlight = () => false;
 const TouchableWithoutFeedback = () => false;
 const TouchableNativeFeedback = () => false;
@@ -48,13 +54,14 @@ const Platform = {
 };
 const PixelRatio = {
   roundToNearestPixel: n => n,
-}
+};
 const BackHandler = {
   addEventListener: jest.fn(),
   removeEventListener: jest.fn(),
-}
+};
 
 ReactNative.View = View;
+ReactNative.SafeAreaView = SafeAreaView;
 ReactNative.ScrollView = ScrollView;
 ReactNative.ListView = ListView;
 ReactNative.Text = Text;

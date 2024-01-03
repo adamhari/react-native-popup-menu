@@ -1,6 +1,6 @@
 import React from 'react';
-import { I18nManager, Animated, Easing, StyleSheet, PixelRatio } from 'react-native';
-import { OPEN_ANIM_DURATION, CLOSE_ANIM_DURATION, USE_NATIVE_DRIVER } from '../constants';
+import { Animated, Easing, I18nManager, PixelRatio, StyleSheet } from 'react-native';
+import { CLOSE_ANIM_DURATION, OPEN_ANIM_DURATION, USE_NATIVE_DRIVER } from '../constants';
 
 const axisPosition = (oDim, wDim, tPos, tDim) => {
   // if options are bigger than window dimension, then render at 0
@@ -16,7 +16,7 @@ const axisPosition = (oDim, wDim, tPos, tDim) => {
     return tPos + tDim - oDim;
   }
   // compute center position
-  let pos = Math.round(tPos + (tDim / 2) - (oDim / 2));
+  let pos = Math.round(tPos + tDim / 2 - oDim / 2);
   // check top boundary
   if (pos < 0) {
     return 0;
@@ -52,10 +52,10 @@ export const fitPositionIntoSafeArea = (position, layouts) => {
   const { width: wWidth } = windowLayout;
   let { top, left, right } = position;
   top = fit(top, oHeight, saY, saY + saHeight);
-  left = fit(left, oWidth, saX, saX + saWidth)
-  right = fit(right, oWidth, wWidth - saX - saWidth, saX)
+  left = fit(left, oWidth, saX, saX + saWidth);
+  right = fit(right, oWidth, wWidth - saX - saWidth, saX);
   return { top, left, right };
-}
+};
 
 export const computePosition = (layouts, isRTL) => {
   const { windowLayout, triggerLayout, optionsLayout } = layouts;
@@ -70,7 +70,6 @@ export const computePosition = (layouts, isRTL) => {
 };
 
 export default class ContextMenu extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -101,7 +100,7 @@ export default class ContextMenu extends React.Component {
   render() {
     const { style, children, layouts, ...other } = this.props;
     const animation = {
-      transform: [ { scale: this.state.scaleAnim } ],
+      transform: [{ scale: this.state.scaleAnim }],
       opacity: this.state.scaleAnim,
     };
     const position = computePosition(layouts, I18nManager.isRTL);
@@ -111,7 +110,6 @@ export default class ContextMenu extends React.Component {
       </Animated.View>
     );
   }
-
 }
 
 // public exports

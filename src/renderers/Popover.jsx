@@ -1,12 +1,12 @@
-import { I18nManager, Animated, Easing, StyleSheet, View } from 'react-native';
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
+import { Animated, Easing, I18nManager, StyleSheet, View } from 'react-native';
 
-import { OPEN_ANIM_DURATION, CLOSE_ANIM_DURATION, USE_NATIVE_DRIVER } from '../constants.js';
+import { CLOSE_ANIM_DURATION, OPEN_ANIM_DURATION, USE_NATIVE_DRIVER } from '../constants';
 
 const popoverPadding = 7;
 const anchorSize = 15;
-const anchorHyp = Math.sqrt(anchorSize*anchorSize + anchorSize*anchorSize);
+const anchorHyp = Math.sqrt(anchorSize * anchorSize + anchorSize * anchorSize);
 const anchorOffset = (anchorHyp + anchorSize) / 2 - popoverPadding;
 
 // left/top placement
@@ -22,9 +22,9 @@ function axisPositiveSideProperties({ tPos, tDim }) {
 
 // computes offsets (off screen overlap) of popover when trying to align it to the center
 function centeringProperties({ oDim, wDim, tPos, tDim }) {
-  const center = Math.round(tPos + (tDim / 2));
-  const leftOffset = (oDim / 2) - center;
-  const rightOffset = center + (oDim / 2) - wDim;
+  const center = Math.round(tPos + tDim / 2);
+  const leftOffset = oDim / 2 - center;
+  const rightOffset = center + oDim / 2 - wDim;
   return { center, leftOffset, rightOffset };
 }
 
@@ -62,30 +62,30 @@ function getCenteringPrice(options) {
 
 /* Evaluate top placement */
 function getTopPrice(hOptions, vOptions) {
-  const centerOffset = getCenteringPrice(vOptions)
-  const sideOffset =  Math.max(0, hOptions.oDim - hOptions.tPos)
-  return centerOffset + sideOffset
+  const centerOffset = getCenteringPrice(vOptions);
+  const sideOffset = Math.max(0, hOptions.oDim - hOptions.tPos);
+  return centerOffset + sideOffset;
 }
 
 /* Evaluate bottom placement */
 function getBottomPrice(hOptions, vOptions) {
-  const centerOffset = getCenteringPrice(vOptions)
-  const sideOffset =  Math.max(0, hOptions.tPos + hOptions.tDim + hOptions.oDim - hOptions.wDim)
-  return centerOffset + sideOffset
+  const centerOffset = getCenteringPrice(vOptions);
+  const sideOffset = Math.max(0, hOptions.tPos + hOptions.tDim + hOptions.oDim - hOptions.wDim);
+  return centerOffset + sideOffset;
 }
 
 /* Evaluate left placement */
 function getLeftPrice(hOptions, vOptions) {
-  const centerOffset = getCenteringPrice(hOptions)
-  const sideOffset =  Math.max(0, vOptions.oDim - vOptions.tPos)
-  return centerOffset + sideOffset
+  const centerOffset = getCenteringPrice(hOptions);
+  const sideOffset = Math.max(0, vOptions.oDim - vOptions.tPos);
+  return centerOffset + sideOffset;
 }
 
 /* Evaluate right placement */
 function getRightPrice(hOptions, vOptions) {
-  const centerOffset = getCenteringPrice(hOptions)
-  const sideOffset =  Math.max(0, vOptions.tPos + vOptions.tDim + vOptions.oDim - vOptions.wDim)
-  return centerOffset + sideOffset
+  const centerOffset = getCenteringPrice(hOptions);
+  const sideOffset = Math.max(0, vOptions.tPos + vOptions.tDim + vOptions.oDim - vOptions.wDim);
+  return centerOffset + sideOffset;
 }
 
 function getStartPosKey(isRTL) {
@@ -159,7 +159,7 @@ const propertiesByPlacement = {
  *   - placement: <Enum> top|left|top|bottom - position to the trigger
  *   - offset: <Number> value by which must be anchor shifted
  */
-export function computeProperties (
+export function computeProperties(
   { windowLayout, triggerLayout, optionsLayout },
   placement,
   preferredPlacement,
@@ -181,7 +181,7 @@ export function computeProperties (
     tDim: tWidth,
   };
   if (placement !== 'auto' && propertiesByPlacement[placement]) {
-    return propertiesByPlacement[placement](hOptions, vOptions, isRTL)
+    return propertiesByPlacement[placement](hOptions, vOptions, isRTL);
   }
 
   const prices = {
@@ -190,16 +190,16 @@ export function computeProperties (
     right: getRightPrice(hOptions, vOptions),
     left: getLeftPrice(hOptions, vOptions),
   };
-  const bestPrice = Object.values(prices).sort((a, b) => a - b)[0]
-  const bestPlacement = prices[preferredPlacement] === bestPrice
-    ? preferredPlacement
-    : Object.keys(prices).find(pl => prices[pl] === bestPrice)
+  const bestPrice = Object.values(prices).sort((a, b) => a - b)[0];
+  const bestPlacement =
+    prices[preferredPlacement] === bestPrice
+      ? preferredPlacement
+      : Object.keys(prices).find(pl => prices[pl] === bestPrice);
 
-  return propertiesByPlacement[bestPlacement](hOptions, vOptions, isRTL)
+  return propertiesByPlacement[bestPlacement](hOptions, vOptions, isRTL);
 }
 
 export default class Popover extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -209,7 +209,10 @@ export default class Popover extends React.Component {
 
   componentDidMount() {
     Animated.timing(this.state.scaleAnim, {
-      duration: this.props.openAnimationDuration !== undefined ? this.props.openAnimationDuration : OPEN_ANIM_DURATION,
+      duration:
+        this.props.openAnimationDuration !== undefined
+          ? this.props.openAnimationDuration
+          : OPEN_ANIM_DURATION,
       toValue: 1,
       easing: Easing.out(Easing.cubic),
       useNativeDriver: USE_NATIVE_DRIVER,
@@ -219,7 +222,10 @@ export default class Popover extends React.Component {
   close() {
     return new Promise(resolve => {
       Animated.timing(this.state.scaleAnim, {
-        duration: this.props.closeAnimationDuration !== undefined ? this.props.closeAnimationDuration : CLOSE_ANIM_DURATION,
+        duration:
+          this.props.closeAnimationDuration !== undefined
+            ? this.props.closeAnimationDuration
+            : CLOSE_ANIM_DURATION,
         toValue: 0,
         easing: Easing.in(Easing.cubic),
         useNativeDriver: USE_NATIVE_DRIVER,
@@ -241,7 +247,7 @@ export default class Popover extends React.Component {
     } = this.props;
     const isRTL = I18nManager.isRTL;
     const animation = {
-      transform: [ { scale: this.state.scaleAnim } ],
+      transform: [{ scale: this.state.scaleAnim }],
       opacity: this.state.scaleAnim,
     };
     const { position, placement, offset } = computeProperties(
@@ -252,20 +258,10 @@ export default class Popover extends React.Component {
     );
     return (
       <Animated.View
-        style={[
-          styles.animated,
-          animation,
-          position,
-          getContainerStyle({ placement, isRTL }),
-        ]}
-        pointerEvents="box-none"
+        style={[styles.animated, animation, position, getContainerStyle({ placement, isRTL })]}
       >
         <View
-          style={[
-            styles.anchor,
-            dynamicAnchorStyle({ placement, offset, isRTL }),
-            anchorStyle,
-          ]}
+          style={[styles.anchor, dynamicAnchorStyle({ placement, offset, isRTL }), anchorStyle]}
         />
         <View {...other} style={[styles.options, style]}>
           {children}
@@ -273,15 +269,10 @@ export default class Popover extends React.Component {
       </Animated.View>
     );
   }
-
 }
 
 Popover.propTypes = {
-  anchorStyle: PropTypes.oneOfType([
-    PropTypes.object,
-    PropTypes.number,
-    PropTypes.array,
-  ]),
+  anchorStyle: PropTypes.oneOfType([PropTypes.object, PropTypes.number, PropTypes.array]),
   placement: PropTypes.oneOf(['auto', 'top', 'right', 'bottom', 'left']),
   preferredPlacement: PropTypes.oneOf(['top', 'right', 'bottom', 'left']),
   openAnimationDuration: PropTypes.number,
@@ -293,20 +284,21 @@ Popover.defaultProps = {
   placement: 'auto',
 };
 
-const getContainerStyle = ({ placement, isRTL }) => ({
-  left: {
-    flexDirection: isRTL ? 'row' : 'row-reverse',
-  },
-  right: {
-    flexDirection: isRTL ? 'row-reverse' : 'row',
-  },
-  top: {
-    flexDirection: 'column-reverse',
-  },
-  bottom: {
-    flexDirection: 'column',
-  },
-})[placement]
+const getContainerStyle = ({ placement, isRTL }) =>
+  ({
+    left: {
+      flexDirection: isRTL ? 'row' : 'row-reverse',
+    },
+    right: {
+      flexDirection: isRTL ? 'row-reverse' : 'row',
+    },
+    top: {
+      flexDirection: 'column-reverse',
+    },
+    bottom: {
+      flexDirection: 'column',
+    },
+  })[placement];
 
 const dynamicAnchorStyle = ({ offset, placement, isRTL }) => {
   const start = getStartPosKey(isRTL);
@@ -314,37 +306,25 @@ const dynamicAnchorStyle = ({ offset, placement, isRTL }) => {
     case 'right':
       return {
         top: offset,
-        transform: [
-          { translateX: anchorOffset },
-          { rotate: '45deg' },
-        ],
+        transform: [{ translateX: anchorOffset }, { rotate: '45deg' }],
       };
     case 'left':
       return {
         top: offset,
-        transform: [
-          { translateX: -anchorOffset },
-          { rotate: '45deg' },
-        ],
+        transform: [{ translateX: -anchorOffset }, { rotate: '45deg' }],
       };
     case 'top':
       return {
         [start]: offset,
-        transform: [
-          { translateY: -anchorOffset },
-          { rotate: '45deg' },
-        ],
+        transform: [{ translateY: -anchorOffset }, { rotate: '45deg' }],
       };
     case 'bottom':
       return {
         [start]: offset,
-        transform: [
-          { translateY: anchorOffset },
-          { rotate: '45deg' },
-        ],
+        transform: [{ translateY: anchorOffset }, { rotate: '45deg' }],
       };
   }
-}
+};
 
 export const styles = StyleSheet.create({
   animated: {
@@ -352,6 +332,7 @@ export const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     position: 'absolute',
     alignItems: 'center',
+    pointerEvents: 'box-none',
   },
   options: {
     borderRadius: 2,
