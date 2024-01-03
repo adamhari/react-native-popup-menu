@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ElementType, ReactNode } from 'react';
-import { LayoutRectangle, StyleProp, TextStyle, View, ViewStyle } from 'react-native';
+import { LayoutRectangle, StyleProp, TextStyle, View, ViewProps, ViewStyle } from 'react-native';
 import Backdrop from './Backdrop';
 import { Menu } from './Menu';
 export { Menu, Menu as MenuRef };
@@ -145,3 +145,17 @@ export type LayoutsType = {
   optionsLayout: LayoutRectangle;
   safeAreaLayout: LayoutRectangle;
 };
+
+export type RendererProps = ViewProps & {
+  layouts: LayoutsType;
+};
+
+export type PositionType = {
+  left?: number;
+  right?: number;
+  top?: number;
+};
+
+export type PreferredPlacementType = 'top' | 'left' | 'bottom' | 'right';
+
+export type PlacementType = PreferredPlacementType | 'auto';
